@@ -5,7 +5,7 @@ public class Hotel {
     private int totalFunds; // 호텔 보유 자산
     //객실 정보
     private List<HotelRoom> roomlist;   //객실 정보
-    private List<Reservation> reservationlist;  //예약 정보
+    private List<Reservation> reservationlist;  //예약 정보 
 
     public Hotel() {
         //객실 초기 정보 추가

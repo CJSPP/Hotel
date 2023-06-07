@@ -2,7 +2,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class Reservation {
-    private UUID id;    //예약 번호
+    private UUID id;    //예약 번호 
     private Customer customer; //고객
     private HotelRoom room; // 예약할 방
     private OffsetDateTime date; //예약 날짜, ISO 8601형식 UTC 날짜 및 시간, Asia/Seoul로 지정
