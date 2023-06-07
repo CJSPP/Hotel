@@ -2,7 +2,7 @@ public class Customer {
     // 고객은 고객은 이름, 전화번호, 소지금을 가진다.
     private String name;
     private String phoneNumber;
-    private int money;
+    private int money; 
 
     public Customer(String name, String phone, int money) {
         this.name = name;

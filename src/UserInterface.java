@@ -8,7 +8,7 @@ public class UserInterface {
     static Hotel hotel = new Hotel();
     static Customer customer;
 
-    public static void userSelectDisplay() {
+    public static void userSelectDisplay() throws Exception {
         Scanner sc = new Scanner(System.in);
         boolean start = true;
         while(start) {
@@ -36,7 +36,7 @@ public class UserInterface {
         }
     }
 
-    public static void ClientDisplay() {
+    public static void ClientDisplay() throws Exception {
         Scanner sc = new Scanner(System.in);
         boolean start = true;
 
@@ -46,7 +46,7 @@ public class UserInterface {
         customer = registcustomer();
 
         while (start) {
-            System.out.println("\n"+customer.getName() + "고객님 환영합니다. 오잉호텔입니다.");
+            System.out.println("\n"+customer.getName() + " 고객님 환영합니다. 오잉호텔입니다.");
             System.out.println("원하시는 기능의 번호를 입력해주세요.");
             System.out.println("====================================");
             System.out.println("1. 호텔 예약");
@@ -105,7 +105,7 @@ public class UserInterface {
      */
     private static Customer registcustomer() {
         Scanner sc = new Scanner(System.in);
-        //System.out.println("환영합니다. 오잉호텔입니다. 고객 정보를 등록합니다.");
+        System.out.println("환영합니다. 오잉호텔입니다. 고객 정보를 등록합니다.");
         System.out.print("이름을 입력해주세요 : ");
         String name = sc.nextLine();
 
@@ -139,10 +139,25 @@ public class UserInterface {
     /*
      * 등록된 고객 정보로 호텔 예약
      */
-    private static void reservate() {
+    private static void reservate() throws Exception {
         Scanner sc = new Scanner(System.in);
-        System.out.println("[ 환영합니다. 오잉호텔입니다. 예약을 시작합니다. ] ");
+        boolean duplicatechk = true;
+        //고객은 하루 한번의 예약만 가능 = 현재 고객정보가 예약 정보에 있다면 예약 기능 사용 불가
+        //현재는 cutomer 객체의 주소값을 비교하여 예약정보가 있다면 안되는 방식으로 했지만, Hotel객체에 Customer 정보가 담긴 List가 생긴다면,
+        //List에 등록 시, Customer 객체의 정보를 받아오기 때문에 주소값을 비교해도 동일한 기능을 할것으로 생각된다.
+        if(hotel.getreservationlist().stream().filter((Reservation r) -> r.getCutomer().equals(customer)).toList().size() > 0) {
+            duplicatechk = false;
+        }
 
+        if(!duplicatechk) {
+            System.out.println("이미 예약 정보가 존재합니다.");
+            System.out.println("예약을 종료합니다.");
+            System.out.println("2초후 고객메뉴로 돌아갑니다.....");
+            Thread.sleep(2000);
+            return;
+        }
+
+        System.out.println("[ 환영합니다. 오잉호텔입니다. 예약을 시작합니다. ] ");
         /*
          * 예약할 고객 정보 등록
          * 우선, 예약 수행 시, 고객정보를 입력받는 방식으로 구현
@@ -171,11 +186,12 @@ public class UserInterface {
                 if(customer.getMoney() < hotel.getroomlist().get(roomNum-1).getroomcharge()) {
                     System.out.println("소지금이 부족합니다. 다른 방을 선택해주세요.");
                 } else {
-                    Reservation newReservation = new Reservation(customer, hotel.getroomlist().get(roomNum), OffsetDateTime.now(ZoneId.of("Asia/Seoul")));
+                    Reservation newReservation = new Reservation(customer, hotel.getroomlist().get(roomNum-1), OffsetDateTime.now(ZoneId.of("Asia/Seoul")));
                     hotel.getreservationlist().add(newReservation);
                     System.out.println("예약에 성공하였습니다.");
                     System.out.println("예약번호 : " + newReservation.getUuid());
                     System.out.println("예약날짜 : " + newReservation.getDate());
+                
                     //고객의 보유금액 차감
                     customer.setMoney(customer.getMoney() - hotel.getroomlist().get(roomNum-1).getroomcharge());
                     System.out.println("보유금액 : " + customer.getMoney());
